@@ -176,7 +176,7 @@ static Key keys[] = {
 
 	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_a,         togglecookiepolicy, { 0 } },
 	{ ModeNormal,   0,                        GDK_KEY_F11,       togglefullscreen, { 0 } },
-	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_o,         toggleinspector, { 0 } },
+	{ ModeAll,      0,                        GDK_KEY_F12,       toggleinspector, { 0 } },
 
 	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_c,         toggle,     { .i = CaretBrowsing } },
 	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_f,         toggle,     { .i = FrameFlattening } },
