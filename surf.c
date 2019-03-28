@@ -1850,11 +1850,11 @@ clipboard(Client *c, const Arg *a)
 {
 	if (a->i) { /* load clipboard uri */
 		gtk_clipboard_request_text(gtk_clipboard_get(
-		                           GDK_SELECTION_PRIMARY),
+		                           GDK_SELECTION_CLIPBOARD),
 		                           pasteuri, c);
 	} else { /* copy uri */
 		gtk_clipboard_set_text(gtk_clipboard_get(
-		                       GDK_SELECTION_PRIMARY), c->targeturi
+		                       GDK_SELECTION_CLIPBOARD), c->targeturi
 		                       ? c->targeturi : geturi(c), -1);
 	}
 }
