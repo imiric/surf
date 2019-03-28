@@ -129,57 +129,61 @@ static SiteSpecific certs[] = {
  * edit the CLEANMASK() macro.
  */
 static Key keys[] = {
-	/* modifier              keyval          function    arg */
-	{ MODKEY,                GDK_KEY_g,      spawn,      SETPROP("_SURF_URI", "_SURF_GO", PROMPT_GO) },
-	{ MODKEY,                GDK_KEY_f,      spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
-	{ MODKEY,                GDK_KEY_slash,  spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
+	/* mode         modifier                  keyval             function    arg */
+	{ ModeNormal,   0,                        GDK_KEY_o,         spawn,      SETPROP("_SURF_URI", "_SURF_GO", PROMPT_GO) },
+	{ ModeAll,      MODKEY,                   GDK_KEY_f,         spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
+	{ ModeNormal,   0,                        GDK_KEY_slash,     spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
 
-	{ 0,                     GDK_KEY_Escape, stop,       { 0 } },
-	{ MODKEY,                GDK_KEY_c,      stop,       { 0 } },
+	{ ModeNormal,   0,                        GDK_KEY_i,         setmode,    { .i = ModeInsert } },
+	{ ModeAll,      0,                        GDK_KEY_Escape,    setmode,    { .i = ModeNormal } },
 
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_r,      reload,     { .i = 1 } },
-	{ MODKEY,                GDK_KEY_r,      reload,     { .i = 0 } },
+	{ ModeAll,      GDK_SHIFT_MASK,           GDK_KEY_Escape,    stop,       { 0 } },
+	{ ModeAll,      MODKEY,                   GDK_KEY_c,         stop,       { 0 } },
 
-	{ MODKEY,                GDK_KEY_l,      navigate,   { .i = +1 } },
-	{ MODKEY,                GDK_KEY_h,      navigate,   { .i = -1 } },
+	{ ModeNormal,   0,                        GDK_KEY_r,         reload,     { .i = 0 } },
+	{ ModeNormal,   GDK_SHIFT_MASK,           GDK_KEY_r,         reload,     { .i = 1 } },
+
+	{ ModeNormal,   GDK_SHIFT_MASK,           GDK_KEY_l,         navigate,   { .i = +1 } },
+	{ ModeNormal,   GDK_SHIFT_MASK,           GDK_KEY_h,         navigate,   { .i = -1 } },
 
 	/* vertical and horizontal scrolling, in viewport percentage */
-	{ MODKEY,                GDK_KEY_j,      scrollv,    { .i = +10 } },
-	{ MODKEY,                GDK_KEY_k,      scrollv,    { .i = -10 } },
-	{ MODKEY,                GDK_KEY_space,  scrollv,    { .i = +50 } },
-	{ MODKEY,                GDK_KEY_b,      scrollv,    { .i = -50 } },
-	{ MODKEY,                GDK_KEY_i,      scrollh,    { .i = +10 } },
-	{ MODKEY,                GDK_KEY_u,      scrollh,    { .i = -10 } },
+	{ ModeNormal,   0,                        GDK_KEY_j,         scrollv,    { .i = +10 } },
+	{ ModeNormal,   0,                        GDK_KEY_k,         scrollv,    { .i = -10 } },
+	{ ModeNormal,   0,                        GDK_KEY_space,     scrollv,    { .i = +50 } },
+	{ ModeNormal,   0,                        GDK_KEY_b,         scrollv,    { .i = -50 } },
+	{ ModeNormal,   0,                        GDK_KEY_g,         scrollv,    { .i = -1000000 } },
+	{ ModeNormal,   GDK_SHIFT_MASK,           GDK_KEY_g,         scrollv,    { .i = +1000000 } },
+	{ ModeNormal,   0,                        GDK_KEY_i,         scrollh,    { .i = +10 } },
+	{ ModeNormal,   0,                        GDK_KEY_u,         scrollh,    { .i = -10 } },
 
+	{ ModeAll,      MODKEY,                   GDK_KEY_minus,     zoom,       { .i = -1 } },
+	{ ModeAll,      MODKEY,                   GDK_KEY_equal,     zoom,       { .i = +1 } },
+	{ ModeAll,      MODKEY,                   GDK_KEY_0,         zoom,       { .i = 0 } },
 
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_j,      zoom,       { .i = -1 } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_k,      zoom,       { .i = +1 } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_q,      zoom,       { .i = 0  } },
-	{ MODKEY,                GDK_KEY_minus,  zoom,       { .i = -1 } },
-	{ MODKEY,                GDK_KEY_plus,   zoom,       { .i = +1 } },
+	{ ModeNormal,   0,                        GDK_KEY_p,         clipboard,  { .i = 1 } },
+	{ ModeNormal,   0,                        GDK_KEY_y,         clipboard,  { .i = 0 } },
 
-	{ MODKEY,                GDK_KEY_p,      clipboard,  { .i = 1 } },
-	{ MODKEY,                GDK_KEY_y,      clipboard,  { .i = 0 } },
+	{ ModeNormal,   0,                        GDK_KEY_n,         find,       { .i = +1 } },
+	{ ModeNormal,   GDK_SHIFT_MASK,           GDK_KEY_n,         find,       { .i = -1 } },
+	{ ModeAll,      MODKEY,                   GDK_KEY_n,         find,       { .i = +1 } },
+	{ ModeAll,      MODKEY|GDK_SHIFT_MASK,    GDK_KEY_n,         find,       { .i = -1 } },
 
-	{ MODKEY,                GDK_KEY_n,      find,       { .i = +1 } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_n,      find,       { .i = -1 } },
+	{ ModeAll,      MODKEY|GDK_SHIFT_MASK,    GDK_KEY_p,         print,      { 0 } },
+	{ ModeAll,      MODKEY,                   GDK_KEY_t,         showcert,   { 0 } },
 
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_p,      print,      { 0 } },
-	{ MODKEY,                GDK_KEY_t,      showcert,   { 0 } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_a,         togglecookiepolicy, { 0 } },
+	{ ModeNormal,   0,                        GDK_KEY_F11,       togglefullscreen, { 0 } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_o,         toggleinspector, { 0 } },
 
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_a,      togglecookiepolicy, { 0 } },
-	{ 0,                     GDK_KEY_F11,    togglefullscreen, { 0 } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_o,      toggleinspector, { 0 } },
-
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_c,      toggle,     { .i = CaretBrowsing } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_f,      toggle,     { .i = FrameFlattening } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_g,      toggle,     { .i = Geolocation } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_s,      toggle,     { .i = JavaScript } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_i,      toggle,     { .i = LoadImages } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_v,      toggle,     { .i = Plugins } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_b,      toggle,     { .i = ScrollBars } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_t,      toggle,     { .i = StrictTLS } },
-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_m,      toggle,     { .i = Style } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_c,         toggle,     { .i = CaretBrowsing } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_f,         toggle,     { .i = FrameFlattening } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_g,         toggle,     { .i = Geolocation } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_s,         toggle,     { .i = JavaScript } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_i,         toggle,     { .i = LoadImages } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_v,         toggle,     { .i = Plugins } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_b,         toggle,     { .i = ScrollBars } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_t,         toggle,     { .i = StrictTLS } },
+	{ ModeNormal,   MODKEY|GDK_SHIFT_MASK,    GDK_KEY_m,         toggle,     { .i = Style } },
 };
 
 /* button definitions */

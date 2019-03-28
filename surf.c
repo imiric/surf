@@ -35,6 +35,9 @@
 #define LENGTH(x)               (sizeof(x) / sizeof(x[0]))
 #define CLEANMASK(mask)         (mask & (MODKEY|GDK_SHIFT_MASK))
 
+#define ModeAll (ModeNormal | ModeInsert)
+static enum { ModeNormal = 0x1, ModeInsert = 0x2 } currentmode = ModeNormal;
+
 enum { AtomFind, AtomGo, AtomUri, AtomLast };
 
 enum {
@@ -113,6 +116,7 @@ typedef struct Client {
 } Client;
 
 typedef struct {
+	unsigned int mode;
 	guint mod;
 	guint keyval;
 	void (*func)(Client *c, const Arg *a);
@@ -140,11 +144,17 @@ typedef struct {
 	regex_t re;
 } SiteSpecific;
 
+typedef struct {
+    char * token;
+    char * uri;
+} SearchEngine;
+
 /* Surf */
 static void usage(void);
 static void setup(void);
 static void sigchld(int unused);
 static void sighup(int unused);
+static void setmode(Client *c, const Arg *arg);
 static char *buildfile(const char *path);
 static char *buildpath(const char *path);
 static char *untildepath(const char *path);
@@ -308,6 +318,11 @@ usage(void)
 	die("usage: surf [-bBdDfFgGiIkKmMnNpPsStTvwxX]\n"
 	    "[-a cookiepolicies ] [-c cookiefile] [-C stylefile] [-e xid]\n"
 	    "[-r scriptfile] [-u useragent] [-z zoomlevel] [uri]\n");
+}
+
+static void
+setmode(Client *c, const Arg *arg) {
+    currentmode = arg->i;
 }
 
 void
@@ -1338,6 +1353,7 @@ winevent(GtkWidget *w, GdkEvent *e, Client *c)
 			for (i = 0; i < LENGTH(keys); ++i) {
 				if (gdk_keyval_to_lower(e->key.keyval) ==
 				    keys[i].keyval &&
+				    (currentmode & keys[i].mode) &&
 				    CLEANMASK(e->key.state) == keys[i].mod &&
 				    keys[i].func) {
 					updatewinid(c);
