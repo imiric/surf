@@ -171,6 +171,7 @@ static void evalscript(Client *c, const char *jsstr, ...);
 static void updatewinid(Client *c);
 static void handleplumb(Client *c, const char *uri);
 static void newwindow(Client *c, const Arg *a, int noembed);
+static gchar *parseuri(const gchar *uri);
 static void spawn(Client *c, const Arg *a);
 static void msgext(Client *c, char type, const Arg *a);
 static void destroyclient(Client *c);
@@ -559,7 +560,7 @@ loaduri(Client *c, const Arg *a)
 			url = g_strdup_printf("file://%s", path);
 			free(path);
 		} else {
-			url = g_strdup_printf("http://%s", uri);
+			url = parseuri(uri);
 		}
 		if (apath != uri)
 			free(apath);
@@ -1763,6 +1764,21 @@ destroywin(GtkWidget* w, Client *c)
 	destroyclient(c);
 	if (!clients)
 		gtk_main_quit();
+}
+
+static gchar *
+parseuri(const gchar * uri) {
+    guint i;
+    for (i = 0; i < LENGTH(searchengines); i++) {
+        if (searchengines[i].token == NULL
+                || searchengines[i].uri == NULL
+                || *(uri + strlen(searchengines[i].token)) != ' ')
+            continue;
+        if (g_str_has_prefix(uri, searchengines[i].token))
+            return g_strdup_printf(searchengines[i].uri, uri + strlen(searchengines[i].token) + 1);
+    }
+
+    return g_strrstr(uri, "://") ? g_strdup(uri) : g_strdup_printf("http://%s", uri);
 }
 
 void
