@@ -71,7 +71,10 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
         .v = (const char *[]){ "/bin/sh", "-c", \
              "prop=\"$(printf '%b' \"$(xprop -id $1 $2 " \
              "| sed \"s/^$2(STRING) = //;s/^\\\"\\(.*\\)\\\"$/\\1/\")\" " \
-             "| dmenu -b -p \"$4\" -w $1)\" && xprop -id $1 -f $3 8s -set $3 \"$prop\"", \
+             "| rofi -dmenu -location 7 -width 100% -lines 1 -p \"$4\" " \
+             "-m \"wid:$1\" -font 'Iosevka Term ss08 14' " \
+             "-theme-str 'window { children: [listview, inputbar]; } listview { scrollbar: false; }')\" " \
+             "&& xprop -id $1 -f $3 8s -set $3 \"$prop\"", \
              "surf-setprop", winid, r, s, p, NULL \
         } \
 }
