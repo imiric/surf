@@ -1,7 +1,8 @@
 /* modifier 0 means no modifier */
 static int surfuseragent    = 1;  /* Append Surf version to default WebKit user agent */
 static char *fulluseragent  = ""; /* Or override the whole user agent string */
-static char *scriptfile     = "~/.surf/script.js";
+static char *scriptfile     = "~/.surf/scripts/default.js";
+static char *scriptdir      = "~/.surf/scripts/";
 static char *styledir       = "~/.surf/styles/";
 static char *certdir        = "~/.surf/certificates/";
 static char *cachedir       = "~/.surf/cache/";
@@ -113,6 +114,12 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
 static SiteSpecific styles[] = {
 	/* regexp               file in $styledir */
 	{ ".*",                 "default.css" },
+};
+
+/* scripts */
+static SiteSpecific scripts[] = {
+	/* regexp               file in $styledir */
+	// { "//suckless\\.org/", "suckless.js" },
 };
 
 /* certificates */
