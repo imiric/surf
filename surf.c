@@ -177,6 +177,7 @@ static void setcert(Client *c, const char *file);
 static const char *getstyle(const char *uri);
 static const char *getscript(const char *uri);
 static void setstyle(Client *c, const char *file);
+static void bookmark(Client *c, const Arg *a);
 static void runscript(Client *c, const char *file);
 static void evalscript(Client *c, const char *jsstr, ...);
 static void updatewinid(Client *c);
@@ -1007,6 +1008,13 @@ evalscript(Client *c, const char *jsstr, ...)
 
 	webkit_web_view_run_javascript(c->view, script, NULL, NULL, NULL);
 	g_free(script);
+}
+
+void
+bookmark(Client *c, const Arg *a)
+{
+	Arg arg = (Arg)BOOKMARK_ADD(geturi(c), c->title, PROMPT_BMARK);
+	spawn(c, &arg);
 }
 
 void

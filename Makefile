@@ -59,6 +59,7 @@ dist: distclean
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f surf $(DESTDIR)$(PREFIX)/bin
+	cp -f bin/pinboard.sh $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/surf
 	mkdir -p $(DESTDIR)$(LIBDIR)
 	cp -f libsurf-webext.so $(DESTDIR)$(LIBDIR)
@@ -69,6 +70,7 @@ install: all
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/surf
+	rm -f $(DESTDIR)$(PREFIX)/bin/pinboard.sh
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/surf.1
 	rm -f $(DESTDIR)$(LIBDIR)/libsurf-webext.so
 	- rmdir $(DESTDIR)$(LIBDIR)

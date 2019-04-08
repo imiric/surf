@@ -7,6 +7,7 @@ static char *styledir       = "~/.surf/styles/";
 static char *certdir        = "~/.surf/certificates/";
 static char *cachedir       = "~/.surf/cache/";
 static char *cookiefile     = "~/.surf/cookies.txt";
+#define BMARKS_FILE "~/.surf/bookmarks.json"
 
 /* Webkit default features */
 /* Highest priority value will be used.
@@ -66,8 +67,10 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
 
 #define PROMPT_GO   "Go"
 #define PROMPT_FIND "Find"
+#define PROMPT_BMARK "Tags"
+#define PROMPT_BMARKLIST "Bookmarks"
 
-/* SETPROP(readprop, setprop, prompt)*/
+/* SETPROP(readprop, setprop, prompt) */
 #define SETPROP(r, s, p) { \
         .v = (const char *[]){ "/bin/sh", "-c", \
              "prop=\"$(printf '%b' \"$(xprop -id $1 $2 " \
@@ -86,6 +89,27 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
              "curl -g -L -J -O -A \"$1\" -b \"$2\" -c \"$2\"" \
              " -e \"$3\" \"$4\"; read", \
              "surf-download", useragent, cookiefile, r, u, NULL \
+        } \
+}
+
+/* BOOKMARK_ADD(uri, title, prompt) */
+#define BOOKMARK_ADD(u, t, p) { \
+        .v = (const char *[]){ "/bin/sh", "-c", \
+             "pinboard.sh \"$1\" \"$2\" \"$3\" \"$4\"", \
+             "surf-bookmark-add", winid, u, t, p, NULL \
+        } \
+}
+
+/* BOOKMARK_SELECT(setprop, prompt) */
+#define BOOKMARK_SELECT(s, p) { \
+        .v = (const char *[]){ "/bin/bash", "-c", \
+             "( [ -s " BMARKS_FILE " ] || pinboard bookmarks > " BMARKS_FILE " ) " \
+             "&& bmarklist=$(jq -r '.[] | \"\\(.href)\\t\\(.description)\\t\\(.tags)\"' " BMARKS_FILE ") " \
+             "&& selected=\"$(echo \"$bmarklist\" | rofi -dmenu -location 7 -width 100% -lines 10 -p \"$3\" " \
+               "-i -m \"wid:$1\" -font 'Iosevka Term ss08 14' " \
+               "-theme-str 'window { children: [listview, inputbar]; }' | cut -d'	' -f1)\" " \
+             "&& [ -n \"$selected\" ] && xprop -id $1 -f $2 8s -set $2 \"$selected\"", \
+             "surf-bookmark-select", winid, s, p, NULL \
         } \
 }
 
@@ -146,6 +170,9 @@ static Key keys[] = {
 
 	{ ModeNormal,   0,                        GDK_KEY_i,         setmode,    { .i = ModeInsert } },
 	{ ModeAll,      0,                        GDK_KEY_Escape,    setmode,    { .i = ModeNormal } },
+
+	{ ModeNormal,   GDK_SHIFT_MASK,           GDK_KEY_b,         spawn,      BOOKMARK_SELECT("_SURF_GO", PROMPT_BMARKLIST) },
+	{ ModeNormal,   MODKEY,                   GDK_KEY_b,         bookmark,   { 0 } },
 
 	{ ModeAll,      GDK_SHIFT_MASK,           GDK_KEY_Escape,    stop,       { 0 } },
 	{ ModeAll,      MODKEY,                   GDK_KEY_c,         stop,       { 0 } },
