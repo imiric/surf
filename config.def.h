@@ -64,8 +64,8 @@ static int winsize[] = { 800, 600 };
 static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
                                     WEBKIT_FIND_OPTIONS_WRAP_AROUND;
 
-#define PROMPT_GO   "Go:"
-#define PROMPT_FIND "Find:"
+#define PROMPT_GO   "Go"
+#define PROMPT_FIND "Find"
 
 /* SETPROP(readprop, setprop, prompt)*/
 #define SETPROP(r, s, p) { \
